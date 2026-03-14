@@ -122,6 +122,218 @@ AES_SECRET=your_secret
 
 ---
 
+## API Documentation
+
+The backend exposes REST APIs for authentication and task management.  
+All task-related requests and responses are **AES encrypted** for secure communication.
+
+Base URL:
+
+```
+https://task-engine.onrender.com/api
+```
+
+---
+
+### 1. Register User
+
+**Endpoint**
+
+```
+POST /api/auth/register
+```
+
+**Request Body**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "123456"
+}
+```
+
+**Response**
+
+```json
+{
+  "message": "User created"
+}
+```
+
+---
+
+### 2. Login User
+
+**Endpoint**
+
+```
+POST /api/auth/login
+```
+
+**Request Body**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "123456"
+}
+```
+
+**Response**
+
+```json
+{
+  "message": "Logged in"
+}
+```
+
+**Notes**
+
+- A JWT token is issued on successful login.
+- The token is stored in an **HTTP-only cookie** for secure authentication.
+
+---
+
+### 3. Create Task
+
+**Endpoint**
+
+```
+POST /api/tasks
+```
+
+**Request Body**
+
+The request payload is **AES encrypted**.
+
+Example:
+
+```json
+{
+  "payload": "AES_ENCRYPTED_STRING"
+}
+```
+
+Example decrypted payload:
+
+```json
+{
+  "title": "Complete Assignment",
+  "description": "Finish the SyncUp internship assignment",
+  "status": "pending"
+}
+```
+
+**Response**
+
+```json
+{
+  "title": "Complete Assignment",
+  "description": "Finish the SyncUp internship assignment",
+  "status": "pending"
+}
+```
+
+---
+
+### 4. Fetch Tasks
+
+**Endpoint**
+
+```
+GET /api/tasks
+```
+
+**Query Parameters**
+
+| Parameter | Description |
+|-----------|-------------|
+| page | Pagination page number |
+| search | Search by task title |
+| status | Filter by task status |
+
+Example:
+
+```
+GET /api/tasks?page=1&search=&status=
+```
+
+**Response**
+
+```json
+{
+  "tasks": [
+    {
+      "_id": "12345",
+      "title": "Complete Assignment",
+      "description": "Finish project",
+      "status": "pending"
+    }
+  ],
+  "currentPage": 1,
+  "totalPages": 1
+}
+```
+
+---
+
+### 5. Update Task
+
+**Endpoint**
+
+```
+PUT /api/tasks/:id
+```
+
+**Request Body**
+
+```json
+{
+  "title": "Updated Task Title",
+  "description": "Updated description",
+  "status": "completed"
+}
+```
+
+**Response**
+
+```json
+{
+  "message": "Task updated successfully"
+}
+```
+
+---
+
+### 6. Delete Task
+
+**Endpoint**
+
+```
+DELETE /api/tasks/:id
+```
+
+**Response**
+
+```json
+{
+  "message": "Task deleted"
+}
+```
+
+---
+
+## Security Implementation
+
+The application implements multiple security mechanisms:
+
+- **JWT Authentication** for protected routes
+- **HTTP-only cookies** to store authentication tokens
+- **AES encryption** for request and response payloads
+- **Environment variables** to store secrets (`JWT_SECRET`, `AES_SECRET`)
+- **CORS configuration** for controlled cross-origin access
+---
+
 ## Author
 
 Siddhant Chasta
